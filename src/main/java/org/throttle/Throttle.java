@@ -20,7 +20,7 @@ public class Throttle {
         this.timer = timer;
     }
 
-    public boolean isAllowed() {
+    public boolean isResourceAllowed() {
         long currentTime = timer.get();
 
         boolean verdict = getVerdict(currentTime);

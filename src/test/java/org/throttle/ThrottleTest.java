@@ -34,42 +34,42 @@ public class ThrottleTest {
     public void allow_the_first_resource_usage() {
         // set time T
         when(timer.get()).thenReturn(T);
-        assertTrue(limiter.isAllowed());
+        assertTrue(limiter.isResourceAllowed());
     }
 
     @Test
     public void reject_the_second_resource_usage_under_time_threshold() {
         // set time T
         when(timer.get()).thenReturn(T);
-        assertTrue(limiter.isAllowed());
+        assertTrue(limiter.isResourceAllowed());
         // set time T + 90ms
         when(timer.get()).thenReturn(T + (THRESHOLD - 10L));
-        assertFalse(limiter.isAllowed());
+        assertFalse(limiter.isResourceAllowed());
     }
 
     @Test
     public void allow_the_second_resourse_usage_above_time_threshold() {
         // set time T
         when(timer.get()).thenReturn(T);
-        assertTrue(limiter.isAllowed());
+        assertTrue(limiter.isResourceAllowed());
         // set time T + 110ms
         when(timer.get()).thenReturn(T + (THRESHOLD + 10L));
-        assertTrue(limiter.isAllowed());
+        assertTrue(limiter.isResourceAllowed());
     }
 
     @Test
     public void reject_more_then_two_fast_sequental_resourse_requests_and_allow_above_threshold() {
         // set time T
         when(timer.get()).thenReturn(T);
-        assertTrue(limiter.isAllowed());
+        assertTrue(limiter.isResourceAllowed());
         // set time T + 80ms
         when(timer.get()).thenReturn(T + (THRESHOLD - 20L));
-        assertFalse(limiter.isAllowed());
+        assertFalse(limiter.isResourceAllowed());
         // set time T + 90ms
         when(timer.get()).thenReturn(T + (THRESHOLD - 10L));
-        assertFalse(limiter.isAllowed());
+        assertFalse(limiter.isResourceAllowed());
         // set time T + 100ms
         when(timer.get()).thenReturn(T + THRESHOLD);
-        assertTrue(limiter.isAllowed());
+        assertTrue(limiter.isResourceAllowed());
     }
 }
