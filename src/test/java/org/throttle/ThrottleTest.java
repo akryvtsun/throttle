@@ -27,7 +27,7 @@ public class ThrottleTest {
     }
 
     @Test
-    public void allows_the_first_resource_usage() {
+    public void allow_the_first_resource_usage() {
         when(timer.get()).thenReturn(0L);
         assertTrue(limiter.isAllowed());
     }
@@ -37,5 +37,12 @@ public class ThrottleTest {
         when(timer.get()).thenReturn(0L);
         assertTrue(limiter.isAllowed());
         assertFalse(limiter.isAllowed());
+    }
+
+    @Test
+    public void allows_the_second_resource_usage_after_long_time() throws Exception {
+        when(timer.get()).thenReturn(0L, 1L);
+        assertTrue(limiter.isAllowed());
+        assertTrue(limiter.isAllowed());
     }
 }
