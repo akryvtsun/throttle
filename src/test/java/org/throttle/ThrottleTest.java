@@ -63,7 +63,7 @@ public class ThrottleTest {
         when(timer.get()).thenReturn((long) (T + (THRESHOLD - 10)));
         assertFalse(limiter.isResourceAvailable());
         // set time T + 100ms
-        when(timer.get()).thenReturn((long) (T + THRESHOLD));
+        when(timer.get()).thenReturn((long) (T + THRESHOLD) + 10);
         assertTrue(limiter.isResourceAvailable());
     }
 }
