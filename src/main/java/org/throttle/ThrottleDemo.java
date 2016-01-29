@@ -7,14 +7,14 @@ import java.time.LocalTime;
  */
 public class ThrottleDemo {
 
-    public static final int RATE = 8;
+    public static final int RATE = 3;
 
     public static void main(String[] args) {
         Throttle t = new Throttle(RATE);
 
         int counter = 0;
         while (true) {
-            if (t.isResourceAllowed()) {
+            if (t.isResourceAvailable()) {
                 System.out.printf("%s Resource usage\n", LocalTime.now());
                 counter++;
                 if (counter > RATE) {
