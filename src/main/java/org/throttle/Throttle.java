@@ -5,23 +5,32 @@ package org.throttle;
  */
 public class Throttle {
 
+    private final int threshold;
     private final TimeSupplier timer;
+
+    private boolean firstTimeUsage = true;
     private long lastTime = -1L;    // undefined after creation
 
-//    public Throttle() {
-//        super(() -> {
-//            System.currentTimeMillis();
-//        });
-//    }
+    public Throttle(int rate) {
+        this(rate, () -> System.currentTimeMillis() );
+    }
 
-    Throttle(TimeSupplier timer) {
+    Throttle(int rate, TimeSupplier timer) {
+        this.threshold = 1000 / rate;
         this.timer = timer;
     }
 
     public boolean isAllowed() {
         long currentTime = timer.get();
-        boolean verdict = currentTime - lastTime > 0;
+        boolean verdict = getVerdict(currentTime);
+        firstTimeUsage = false;
         lastTime = currentTime;
         return verdict;
+    }
+
+    private boolean getVerdict(long currentTime) {
+        return firstTimeUsage
+                ? true
+                : currentTime - lastTime >= threshold;
     }
 }
