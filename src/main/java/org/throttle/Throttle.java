@@ -9,7 +9,7 @@ public class Throttle {
     private final TimeSupplier timer;
 
     private boolean firstTimeUsage = true;
-    private long lastTime = -1L;    // undefined after creation
+    private long lastTime;
 
     public Throttle(int rate) {
         this(rate, () -> System.currentTimeMillis() );
@@ -22,9 +22,12 @@ public class Throttle {
 
     public boolean isAllowed() {
         long currentTime = timer.get();
+
         boolean verdict = getVerdict(currentTime);
         firstTimeUsage = false;
-        lastTime = currentTime;
+
+        if (verdict)
+            lastTime = currentTime;
         return verdict;
     }
 
