@@ -10,5 +10,11 @@ public class ThrottleTest {
     @Test
     public void testName() throws Exception {
         Throttle limiter = new Throttle();
+
+        for (int i = 0; i < 10; i++) {
+            if (limiter.isAllowed()) {
+                System.out.println("Seng message");
+            }
+        }
     }
 }
