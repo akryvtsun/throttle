@@ -9,5 +9,6 @@ public class ThrottleTest {
 
     @Test
     public void testName() throws Exception {
+        Throttle limiter = new Throttle();
     }
 }
