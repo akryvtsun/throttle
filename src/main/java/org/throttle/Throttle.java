@@ -8,7 +8,7 @@ public class Throttle {
     private final double threshold;
     private final TimeSupplier timer;
 
-    private boolean firstTimeUsage = true;
+    private boolean firstUsage = true;
     private long lastTime;
 
     public Throttle(double rate) {
@@ -24,7 +24,7 @@ public class Throttle {
         long currentTime = timer.get();
 
         boolean verdict = getVerdict(currentTime);
-        firstTimeUsage = false;
+        firstUsage = false;
 
         if (verdict)
             lastTime = currentTime;
@@ -32,7 +32,7 @@ public class Throttle {
     }
 
     private boolean getVerdict(long currentTime) {
-        return firstTimeUsage
+        return firstUsage
                 ? true
                 : currentTime - lastTime > threshold;
     }

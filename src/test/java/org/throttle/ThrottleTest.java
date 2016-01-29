@@ -23,47 +23,36 @@ public class ThrottleTest {
     @Mock
     TimeSupplier timer;
 
-    Throttle limiter;
+    Throttle t;
 
     @Before
     public void setUp() {
-        limiter = new Throttle(RATE, timer);
-        // set time T
+        t = new Throttle(RATE, timer);
+    }
+
+    @Test
+    public void allow_the_first_resource_usage_attempt() {
         when(timer.get()).thenReturn(T);
+        assertTrue(t.isResourceAvailable());
     }
 
     @Test
-    public void allow_the_first_resource_usage() {
-        assertTrue(limiter.isResourceAvailable());
+    public void reject_resource_usage_attempt_under_time_threshold() {
+        // do first usage
+        when(timer.get()).thenReturn(T);
+        t.isResourceAvailable();
+        // do next usage under threshold
+        when(timer.get()).thenReturn((long) (T + (THRESHOLD - 1)));
+        assertFalse(t.isResourceAvailable());
     }
 
     @Test
-    public void reject_the_second_resource_usage_under_time_threshold() {
-        assertTrue(limiter.isResourceAvailable());
-        // set time T + 90ms
-        when(timer.get()).thenReturn((long) (T + (THRESHOLD - 10)));
-        assertFalse(limiter.isResourceAvailable());
-    }
-
-    @Test
-    public void allow_the_second_resourse_usage_above_time_threshold() {
-        assertTrue(limiter.isResourceAvailable());
-        // set time T + 110ms
-        when(timer.get()).thenReturn((long) (T + (THRESHOLD + 10)));
-        assertTrue(limiter.isResourceAvailable());
-    }
-
-    @Test
-    public void reject_more_then_two_fast_sequental_resourse_requests_and_allow_above_threshold() {
-        assertTrue(limiter.isResourceAvailable());
-        // set time T + 80ms
-        when(timer.get()).thenReturn((long) (T + (THRESHOLD - 20)));
-        assertFalse(limiter.isResourceAvailable());
-        // set time T + 90ms
-        when(timer.get()).thenReturn((long) (T + (THRESHOLD - 10)));
-        assertFalse(limiter.isResourceAvailable());
-        // set time T + 100ms
-        when(timer.get()).thenReturn((long) (T + THRESHOLD) + 10);
-        assertTrue(limiter.isResourceAvailable());
+    public void allow_resourse_usage_above_time_threshold() {
+        // do first usage
+        when(timer.get()).thenReturn(T);
+        t.isResourceAvailable();
+        // do next usage above threshold
+        when(timer.get()).thenReturn((long) (T + (THRESHOLD + 1)));
+        assertTrue(t.isResourceAvailable());
     }
 }
