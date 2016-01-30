@@ -14,6 +14,13 @@ public class Throttle<R> {
 
     private final BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
 
+    /**
+     *
+     * @param resource
+     * @param rate in TPS
+     * @param <R>
+     * @return
+     */
     public static <R> Throttle<R> createRegularThrottle(R resource, double rate) {
         TimeService time = new TimeServiceImpl();
         ThrottleStrategy strategy = new RegularThrottleStrategy(rate, time);
