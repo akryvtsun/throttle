@@ -1,5 +1,7 @@
 package org.throttle;
 
+import org.throttle.strategy.RegularThrottleStrategy;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;

@@ -1,4 +1,7 @@
-package org.throttle;
+package org.throttle.strategy;
+
+import org.throttle.ThrottleStrategy;
+import org.throttle.TimeService;
 
 /**
  * Created by ax01220 on 1/29/2016.
@@ -11,7 +14,7 @@ public class RegularThrottleStrategy implements ThrottleStrategy {
     private boolean firstUsage = true;
     private long lastTime;
 
-    RegularThrottleStrategy(double rate, TimeService timer) {
+    public RegularThrottleStrategy(double rate, TimeService timer) {
         this.threshold = 1000 / rate;
         this.timer = timer;
     }
