@@ -3,7 +3,7 @@ package org.throttle;
 /**
  * Created by ax01220 on 1/29/2016.
  */
-public class NormalThrottle implements Throttle {
+public class RegularThrottleStrategy implements ThrottleStrategy {
 
     private final double threshold;
     private final TimeService timer;
@@ -11,11 +11,11 @@ public class NormalThrottle implements Throttle {
     private boolean firstUsage = true;
     private long lastTime;
 
-    public NormalThrottle(double rate) {
+    public RegularThrottleStrategy(double rate) {
         this(rate, () -> System.currentTimeMillis() );
     }
 
-    NormalThrottle(double rate, TimeService timer) {
+    RegularThrottleStrategy(double rate, TimeService timer) {
         this.threshold = 1000 / rate;
         this.timer = timer;
     }

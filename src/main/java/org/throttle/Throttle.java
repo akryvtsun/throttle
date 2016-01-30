@@ -1,9 +1,13 @@
 package org.throttle;
 
-/**
- * Created by ax01220 on 1/29/2016.
- */
-public interface Throttle {
+import java.util.function.Consumer;
 
-    boolean isResourceAvailable();
+/**
+ * Created by englishman on 1/29/16.
+ */
+public class Throttle<R> {
+
+    public ThrottleFuture execute(Consumer<R> task) {
+        return null;
+    }
 }

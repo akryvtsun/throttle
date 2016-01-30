@@ -1,7 +1,7 @@
 package org.throttle.demo;
 
-import org.throttle.NormalThrottle;
-import org.throttle.Throttle;
+import org.throttle.RegularThrottleStrategy;
+import org.throttle.ThrottleStrategy;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -14,7 +14,7 @@ public class ThrottleDemo {
     public static final int RATE = 4;
 
     public static void main(String[] args) throws InterruptedException {
-        Throttle t = new NormalThrottle(RATE);
+        ThrottleStrategy t = new RegularThrottleStrategy(RATE);
 
         LocalTime lastAccessTime = LocalTime.now();
         while (true) {

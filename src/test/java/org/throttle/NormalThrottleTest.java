@@ -23,11 +23,11 @@ public class NormalThrottleTest {
     @Mock
     TimeService timer;
 
-    Throttle t;
+    ThrottleStrategy t;
 
     @Before
     public void setUp() {
-        t = new NormalThrottle(RATE, timer);
+        t = new RegularThrottleStrategy(RATE, timer);
     }
 
     @Test
