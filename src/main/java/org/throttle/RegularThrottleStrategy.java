@@ -17,25 +17,19 @@ public class RegularThrottleStrategy implements ThrottleStrategy {
     }
 
     @Override
-    public boolean isResourceAvailable() {
-        long currentTime = timer.get();
+    public void acquire() throws InterruptedException {
+        long currentTime = timer.getTime();
 
-        boolean verdict = getVerdict(currentTime);
-        firstUsage = false;
+        if (firstUsage) {
+            firstUsage = false;
+        }
+        else {
+            long delay = currentTime - lastTime;
+            if (delay < threshold)
+                timer.delay((long) threshold - delay);
+        }
 
-        if (verdict)
-            lastTime = currentTime;
-        return verdict;
+        lastTime = currentTime;
     }
 
-    @Override
-    public void acquire() {
-
-    }
-
-    private boolean getVerdict(long currentTime) {
-        return firstUsage
-                ? true
-                : currentTime - lastTime > threshold;
-    }
 }

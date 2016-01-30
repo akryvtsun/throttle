@@ -30,19 +30,19 @@ public class Throttle<R> {
     private void doExecute() {
         new Thread(() -> {
             while (true) {
-                executeTask();
+                try {
+                    executeTask();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
 
-    private void executeTask() {
-        try {
-            Consumer<R> task = queue.take();
-            strategy.acquire();
-            task.accept(resource);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void executeTask() throws InterruptedException {
+        Consumer<R> task = queue.take();
+        strategy.acquire();
+        task.accept(resource);
     }
 
     public void execute(Consumer<R> task) {
