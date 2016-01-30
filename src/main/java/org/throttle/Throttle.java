@@ -19,7 +19,6 @@ public class Throttle<R> {
         this.strategy = strategy;
     }
 
-    public ThrottleFuture execute(Consumer<R> task) {
-        return null;
+    public void execute(Consumer<R> task) {
     }
 }
