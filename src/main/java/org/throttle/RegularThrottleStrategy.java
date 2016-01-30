@@ -11,10 +11,6 @@ public class RegularThrottleStrategy implements ThrottleStrategy {
     private boolean firstUsage = true;
     private long lastTime;
 
-    public RegularThrottleStrategy(double rate) {
-        this(rate, () -> System.currentTimeMillis() );
-    }
-
     RegularThrottleStrategy(double rate, TimeService timer) {
         this.threshold = 1000 / rate;
         this.timer = timer;
