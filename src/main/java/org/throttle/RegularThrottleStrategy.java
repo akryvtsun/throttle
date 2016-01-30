@@ -32,6 +32,11 @@ public class RegularThrottleStrategy implements ThrottleStrategy {
         return verdict;
     }
 
+    @Override
+    public void acquire() {
+
+    }
+
     private boolean getVerdict(long currentTime) {
         return firstUsage
                 ? true

@@ -5,5 +5,7 @@ package org.throttle;
  */
 public interface ThrottleStrategy {
 
+    @Deprecated
     boolean isResourceAvailable();
+    void acquire();
 }
