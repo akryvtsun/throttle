@@ -10,7 +10,8 @@ public class Throttle<R> {
     private final ThrottleStrategy strategy;
 
     public static <R> Throttle<R> createRegularThrottle(double rate) {
-        ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
+        TimeService time = new TimeServiceImpl();
+        ThrottleStrategy strategy = new RegularThrottleStrategy(rate, time);
         return new Throttle<>(strategy);
     }
 
