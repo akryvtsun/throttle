@@ -1,3 +1,3 @@
 # Throttle
 
-![alternative text](https://raw.githubusercontent.com/englishman/throttle/master/sequence.puml)
+![alternative text](http://uml.mvnsearch.org/github/englishman/throttle/blob/master/sequence.puml)
