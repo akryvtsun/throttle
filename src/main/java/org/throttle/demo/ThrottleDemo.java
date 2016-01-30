@@ -1,5 +1,6 @@
 package org.throttle.demo;
 
+import org.throttle.NormalThrottle;
 import org.throttle.Throttle;
 
 import java.time.LocalTime;
@@ -13,7 +14,7 @@ public class ThrottleDemo {
     public static final int RATE = 4;
 
     public static void main(String[] args) throws InterruptedException {
-        Throttle t = new Throttle(RATE);
+        Throttle t = new NormalThrottle(RATE);
 
         LocalTime lastAccessTime = LocalTime.now();
         while (true) {

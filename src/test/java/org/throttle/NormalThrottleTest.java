@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
  * Created by englishman on 1/28/16.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ThrottleTest {
+public class NormalThrottleTest {
 
     static final long T = 0L;        // initial time
     static final double RATE = 3;    // freq in TPS
@@ -27,7 +27,7 @@ public class ThrottleTest {
 
     @Before
     public void setUp() {
-        t = new Throttle(RATE, timer);
+        t = new NormalThrottle(RATE, timer);
     }
 
     @Test
