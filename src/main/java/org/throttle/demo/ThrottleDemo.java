@@ -1,4 +1,6 @@
-package org.throttle;
+package org.throttle.demo;
+
+import org.throttle.Throttle;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;

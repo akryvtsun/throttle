@@ -6,7 +6,7 @@ package org.throttle;
 public class Throttle {
 
     private final double threshold;
-    private final TimeSupplier timer;
+    private final TimeService timer;
 
     private boolean firstUsage = true;
     private long lastTime;
@@ -15,7 +15,7 @@ public class Throttle {
         this(rate, () -> System.currentTimeMillis() );
     }
 
-    Throttle(double rate, TimeSupplier timer) {
+    Throttle(double rate, TimeService timer) {
         this.threshold = 1000 / rate;
         this.timer = timer;
     }

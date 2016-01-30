@@ -21,7 +21,7 @@ public class ThrottleTest {
     static final double THRESHOLD = 1000 / RATE;
 
     @Mock
-    TimeSupplier timer;
+    TimeService timer;
 
     Throttle t;
 
