@@ -7,6 +7,17 @@ import java.util.function.Consumer;
  */
 public class Throttle<R> {
 
+    private final ThrottleStrategy strategy;
+
+    public static <R> Throttle<R> createRegularThrottle(double rate) {
+        ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
+        return new Throttle<>(strategy);
+    }
+
+    Throttle(ThrottleStrategy strategy) {
+        this.strategy = strategy;
+    }
+
     public ThrottleFuture execute(Consumer<R> task) {
         return null;
     }
