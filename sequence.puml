@@ -1,0 +1,24 @@
+@startuml
+title Throttle sequence diagram
+
+actor Developer as D
+participant Throttle as Tr
+participant "Throttle\nStrategy" as TrS
+participant Timer as T
+
+D -> Tr: execution request
+D <- Tr: return task future
+
+Tr -> TrS
+activate Tr
+TrS -> T
+...waite next execution time...
+TrS <- T
+Tr -> Tr: execute task
+activate Tr #DarkSalmon
+deactivate Tr
+
+D <- Tr: return task result
+deactivate Tr
+
+@enduml
