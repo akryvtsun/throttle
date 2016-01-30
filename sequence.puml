@@ -10,18 +10,16 @@ participant Timer as T
 
 group Developer thread
 D -> Tr: execution request
-Tr -> Tr: create task future
-Tr -> Q: store future
-D <- Tr: return future
+Tr -> Q: store task
 end
 
 group Loop in throttle thread
-Tr <- Q: get next future
+Tr <- Q: get next task
 activate Tr
 Tr -> TrS: ask execution permit
 TrS -> T: ask current time
-TrS <- T: return
-TrS -> T: wait wait next execution time
+TrS <- T: return time
+TrS -> T: wait next execution time
 ...
 TrS <-- T
 Tr <-- TrS
@@ -29,7 +27,6 @@ Tr -> Tr: execute task
 activate Tr #DarkSalmon
 deactivate Tr
 
-D <- Tr: return task result
 deactivate Tr
 end
 
