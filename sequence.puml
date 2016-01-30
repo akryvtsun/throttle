@@ -1,24 +1,35 @@
 @startuml
-title Throttle sequence diagram
-
 actor Developer as D
+box
 participant Throttle as Tr
+participant Queue as Q
+end box
 participant "Throttle\nStrategy" as TrS
 participant Timer as T
 
+group Developer thread
 D -> Tr: execution request
-D <- Tr: return task future
+Tr -> Tr: create task future
+Tr -> Q: store future
+D <- Tr: return future
+end
 
-Tr -> TrS
+group Throttle thread
+Tr <- Q: get next future
 activate Tr
-TrS -> T
-...waite next execution time...
-TrS <- T
+Tr -> TrS: ask execution permit
+TrS -> T: ask current time
+TrS <- T: return
+TrS -> T: wait wait next execution time
+...
+TrS <-- T
+Tr <-- TrS
 Tr -> Tr: execute task
 activate Tr #DarkSalmon
 deactivate Tr
 
 D <- Tr: return task result
 deactivate Tr
+end
 
 @enduml
