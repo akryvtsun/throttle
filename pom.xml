@@ -10,8 +10,16 @@
     <name>throttle</name>
     <url>http://maven.apache.org</url>
 
+    <ciManagement>
+        <system>Travis</system>
+        <url>https://travis-ci.org/englishman/throttle</url>
+    </ciManagement>
+
     <properties>
         <java.version>1.8</java.version>
+
+        <maven.jacoco.plugin.version>0.7.5.201505241946</maven.jacoco.plugin.version>
+        <maven.coveralls.plugin.version>4.1.0</maven.coveralls.plugin.version>
     </properties>
 
     <build>
@@ -24,6 +32,26 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${maven.jacoco.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>${maven.coveralls.plugin.version}</version>
             </plugin>
 
         </plugins>
