@@ -1,36 +1,25 @@
 package org.throttle;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 /**
  * Created by englishman on 1/29/16.
  */
-class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInformer {
+class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInformer, Runnable {
 
     private final R resource;
     private final ThrottleStrategy strategy;
 
     private final BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
 
-    AsyncThrottleImpl(R resource, ThrottleStrategy strategy) {
+    AsyncThrottleImpl(R resource, ThrottleStrategy strategy, Executor executor) {
         this.resource = resource;
         this.strategy = strategy;
 
-        doExecute();
-    }
-
-    private void doExecute() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    executeTask();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        executor.execute(this);
     }
 
     private void executeTask() throws InterruptedException {
@@ -47,5 +36,16 @@ class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInformer {
     @Override
     public int getQueueSize() {
         return queue.size();
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                executeTask();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

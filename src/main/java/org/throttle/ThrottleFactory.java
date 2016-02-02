@@ -3,10 +3,15 @@ package org.throttle;
 import org.throttle.strategy.BurstThrottleStrategy;
 import org.throttle.strategy.RegularThrottleStrategy;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 /**
  * Created by englishman on 2/1/16.
  */
 public class ThrottleFactory {
+
+    private static final Executor EXECUTOR = Executors.newCachedThreadPool();
 
     /**
      *
@@ -18,7 +23,7 @@ public class ThrottleFactory {
     public static <R> Throttle<R> createRegularThrottle(R resource, double rate) {
         TimeService time = new TimeServiceImpl();
         ThrottleStrategy strategy = new RegularThrottleStrategy(rate, time);
-        return new AsyncThrottleImpl<>(resource, strategy);
+        return new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
     }
 
     /**
@@ -33,7 +38,7 @@ public class ThrottleFactory {
         TimeService time = new TimeServiceImpl();
         // TODO remove cyclic dependency
         ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, null);
-        return new AsyncThrottleImpl<>(resource, strategy);
+        return new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
     }
 
     /**
