@@ -30,14 +30,14 @@ public class ThrottleFactory {
      *
      * @param resource
      * @param rate
-     * @param size
+     * @param threshold
      * @param <R>
      * @return
      */
-    public static <R> Throttle<R> createBurstThrottle(R resource, double rate, int size) {
+    public static <R> Throttle<R> createBurstThrottle(R resource, double rate, int threshold) {
         TimeService time = new TimeServiceImpl();
         // TODO remove cyclic dependency
-        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, null);
+        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, threshold, null);
         return new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
     }
 
@@ -50,6 +50,7 @@ public class ThrottleFactory {
      * @return
      */
     public static <R> R createSyncRegularThrottle(Class<R> clazz, R resource, double rate) {
+        // TODO implement via Proxy
         return null;
     }
 }
