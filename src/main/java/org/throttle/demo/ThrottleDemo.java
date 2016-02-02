@@ -1,6 +1,7 @@
 package org.throttle.demo;
 
 import org.throttle.Throttle;
+import org.throttle.ThrottleFactory;
 
 import java.io.PrintStream;
 import java.time.LocalTime;
@@ -14,7 +15,7 @@ public class ThrottleDemo {
 
     public static void main(String[] args) throws InterruptedException {
 
-        Throttle<PrintStream> t = Throttle.createRegularThrottle(System.out, RATE);
+        Throttle<PrintStream> t = ThrottleFactory.createRegularThrottle(System.out, RATE);
 
         while (true) {
             t.execute(r -> {
