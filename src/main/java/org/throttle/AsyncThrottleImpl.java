@@ -7,14 +7,14 @@ import java.util.function.Consumer;
 /**
  * Created by englishman on 1/29/16.
  */
-class ThrottleImpl<R>  implements Throttle<R> {
+class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInformer {
 
     private final R resource;
     private final ThrottleStrategy strategy;
 
     private final BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
 
-    ThrottleImpl(R resource, ThrottleStrategy strategy) {
+    AsyncThrottleImpl(R resource, ThrottleStrategy strategy) {
         this.resource = resource;
         this.strategy = strategy;
 
@@ -42,5 +42,10 @@ class ThrottleImpl<R>  implements Throttle<R> {
     @Override
     public void execute(Consumer<R> task) {
         queue.add(task);
+    }
+
+    @Override
+    public int getQueueSize() {
+        return queue.size();
     }
 }

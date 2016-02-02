@@ -1,5 +1,6 @@
 package org.throttle;
 
+import org.throttle.strategy.BurstThrottleStrategy;
 import org.throttle.strategy.RegularThrottleStrategy;
 
 /**
@@ -14,9 +15,24 @@ public class ThrottleFactory {
      * @param <R>
      * @return
      */
-    public static <R> ThrottleImpl<R> createRegularThrottle(R resource, double rate) {
+    public static <R> Throttle<R> createRegularThrottle(R resource, double rate) {
         TimeService time = new TimeServiceImpl();
         ThrottleStrategy strategy = new RegularThrottleStrategy(rate, time);
-        return new ThrottleImpl<>(resource, strategy);
+        return new AsyncThrottleImpl<>(resource, strategy);
+    }
+
+    /**
+     *
+     * @param resource
+     * @param rate
+     * @param size
+     * @param <R>
+     * @return
+     */
+    public static <R> Throttle<R> createBurstThrottle(R resource, double rate, int size) {
+        TimeService time = new TimeServiceImpl();
+        // TODO remove cyclic dependency
+        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, null);
+        return new AsyncThrottleImpl<>(resource, strategy);
     }
 }
