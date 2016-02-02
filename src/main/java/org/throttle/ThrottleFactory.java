@@ -36,10 +36,10 @@ public class ThrottleFactory {
      */
     public static <R> Throttle<R> createBurstThrottle(R resource, double rate, int threshold) {
         TimeService time = new TimeServiceImpl();
-        Informer i = new Informer();
-        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, threshold, i);
+        Informer holder = new Informer();
+        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, threshold, holder);
         AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
-        i.setDelegete(asyncThrottle);
+        holder.setDelegate(asyncThrottle);
         return asyncThrottle;
     }
 
@@ -47,7 +47,7 @@ public class ThrottleFactory {
 
         private ThrottleInformer delegate;
 
-        void setDelegete(ThrottleInformer delegate) {
+        void setDelegate(ThrottleInformer delegate) {
             this.delegate = delegate;
         }
 
