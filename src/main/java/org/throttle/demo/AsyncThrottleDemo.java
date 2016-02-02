@@ -3,7 +3,6 @@ package org.throttle.demo;
 import org.throttle.Throttle;
 import org.throttle.ThrottleFactory;
 
-import java.io.PrintStream;
 import java.time.LocalTime;
 
 /**
@@ -15,12 +14,12 @@ public class AsyncThrottleDemo {
 
     public static void main(String[] args) throws InterruptedException {
 
-        Throttle<PrintStream> t = ThrottleFactory.createAsyncRegularThrottle(System.out, RATE);
+        final PrinterImpl resource = new PrinterImpl();
+        Throttle<Printer> throttle = ThrottleFactory.createAsyncRegularThrottle(resource, RATE);
 
         while (true) {
-            t.execute(r -> {
+            throttle.execute(r -> {
                 r.printf("%s Resource usage\n", LocalTime.now());
-                r.flush();
 
                 try {
                     Thread.sleep(20);
