@@ -2,6 +2,9 @@ language: java
 
 script: mvn clean package
 
+after_success:
+  - mvn jacoco:report coveralls:report
+
 jdk:
   - oraclejdk8
 
@@ -11,5 +14,3 @@ branches:
 
 sudo: false
 
-after_success:
-  - mvn jacoco:report coveralls:jacoco
