@@ -1,4 +1,7 @@
-package org.throttle;
+package org.throttle.impl;
+
+import org.throttle.Throttle;
+import org.throttle.strategy.ThrottleInformer;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
@@ -8,14 +11,14 @@ import java.util.function.Consumer;
 /**
  * Created by englishman on 1/29/16.
  */
-class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInformer, Runnable {
+public final class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInformer, Runnable {
 
     private final R resource;
     private final ThrottleStrategy strategy;
 
     private final BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
 
-    AsyncThrottleImpl(R resource, ThrottleStrategy strategy, Executor executor) {
+    public AsyncThrottleImpl(R resource, ThrottleStrategy strategy, Executor executor) {
         this.resource = resource;
         this.strategy = strategy;
 

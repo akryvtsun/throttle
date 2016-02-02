@@ -1,7 +1,6 @@
 package org.throttle.strategy;
 
-import org.throttle.ThrottleInformer;
-import org.throttle.ThrottleStrategy;
+import org.throttle.impl.ThrottleStrategy;
 
 /**
  * Created by englishman on 1/30/16.

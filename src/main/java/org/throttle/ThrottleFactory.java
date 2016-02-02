@@ -1,7 +1,11 @@
 package org.throttle;
 
+import org.throttle.impl.AsyncThrottleImpl;
+import org.throttle.impl.SyncThrottleImpl;
+import org.throttle.impl.ThrottleStrategy;
 import org.throttle.strategy.BurstThrottleStrategy;
 import org.throttle.strategy.RegularThrottleStrategy;
+import org.throttle.strategy.ThrottleInformer;
 
 import java.lang.reflect.Proxy;
 import java.util.concurrent.Executor;

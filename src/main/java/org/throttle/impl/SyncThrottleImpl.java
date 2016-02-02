@@ -1,4 +1,4 @@
-package org.throttle;
+package org.throttle.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -6,12 +6,12 @@ import java.lang.reflect.Method;
 /**
  * Created by englishman on 2/1/16.
  */
-class SyncThrottleImpl<R> implements InvocationHandler {
+public final class SyncThrottleImpl<R> implements InvocationHandler {
 
     private final R resource;
     private final ThrottleStrategy strategy;
 
-    SyncThrottleImpl(R resource, ThrottleStrategy strategy) {
+    public SyncThrottleImpl(R resource, ThrottleStrategy strategy) {
         this.resource = resource;
         this.strategy = strategy;
     }
