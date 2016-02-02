@@ -41,7 +41,7 @@
                 <version>${maven.jacoco.plugin.version}</version>
 		        <configuration>
                     <excludes>
-                        <exclude>org.throttle.demo</exclude>
+                        <exclude>**/demo/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
