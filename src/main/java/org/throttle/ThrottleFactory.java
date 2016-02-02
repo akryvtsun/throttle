@@ -35,4 +35,16 @@ public class ThrottleFactory {
         ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, null);
         return new AsyncThrottleImpl<>(resource, strategy);
     }
+
+    /**
+     *
+     * @param clazz
+     * @param resource
+     * @param rate
+     * @param <R>
+     * @return
+     */
+    public static <R> R createSyncRegularThrottle(Class<R> clazz, R resource, double rate) {
+        return null;
+    }
 }
