@@ -22,7 +22,7 @@ public class ThrottleFactory {
      * @return
      */
     public static <R> Throttle<R> createAsyncRegularThrottle(R resource, double rate) {
-        ThrottleStrategy strategy = createRegularStrategy(rate);
+        ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
         return new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
     }
 
@@ -35,9 +35,8 @@ public class ThrottleFactory {
      * @return
      */
     public static <R> Throttle<R> createAsyncBurstThrottle(R resource, double rate, int threshold) {
-        TimeService time = new TimeServiceImpl();
         InformerHolder holder = new InformerHolder();
-        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, threshold, holder);
+        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, threshold, holder);
         AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
         // break cyclic dependency between strategy and throttle
         holder.setDelegate(asyncThrottle);
@@ -53,7 +52,7 @@ public class ThrottleFactory {
      * @return
      */
     public static <R> R createSyncRegularThrottle(Class<R> clazz, R resource, double rate) {
-        ThrottleStrategy strategy = createRegularStrategy(rate);
+        ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
         SyncThrottleImpl<R> syncThrottle = new SyncThrottleImpl<>(resource, strategy);
 
         return (R) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
@@ -72,10 +71,5 @@ public class ThrottleFactory {
         public int getQueueSize() {
             return delegate.getQueueSize();
         }
-    }
-
-    private static ThrottleStrategy createRegularStrategy(double rate) {
-        TimeService time = new TimeServiceImpl();
-        return new RegularThrottleStrategy(rate, time);
     }
 }

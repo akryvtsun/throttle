@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.throttle.ThrottleStrategy;
-import org.throttle.TimeService;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;

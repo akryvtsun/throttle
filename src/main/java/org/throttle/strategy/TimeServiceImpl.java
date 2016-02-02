@@ -1,4 +1,4 @@
-package org.throttle;
+package org.throttle.strategy;
 
 /**
  * Created by englishman on 1/29/16.

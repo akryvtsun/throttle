@@ -1,9 +1,9 @@
-package org.throttle;
+package org.throttle.strategy;
 
 /**
  * Created by ax01220 on 1/29/2016.
  */
-public interface TimeService {
+interface TimeService {
     /**
      *
      * @return

@@ -2,7 +2,6 @@ package org.throttle.strategy;
 
 import org.throttle.ThrottleInformer;
 import org.throttle.ThrottleStrategy;
-import org.throttle.TimeService;
 
 /**
  * Created by englishman on 1/30/16.
@@ -17,7 +16,11 @@ public class BurstThrottleStrategy implements ThrottleStrategy {
     private boolean firstUsage = true;
     private long lastTime;
 
-    public BurstThrottleStrategy(double rate, TimeService timer, int sizeThreshold, ThrottleInformer informer) {
+    public BurstThrottleStrategy(double rate, int sizeThreshold, ThrottleInformer informer) {
+        this(rate, new TimeServiceImpl(), sizeThreshold, informer);
+    }
+
+    BurstThrottleStrategy(double rate, TimeService timer, int sizeThreshold, ThrottleInformer informer) {
         this.threshold = 1000 / rate;
         this.timer = timer;
         this.sizeThreshold = sizeThreshold;
