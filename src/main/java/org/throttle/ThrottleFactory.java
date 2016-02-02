@@ -36,9 +36,25 @@ public class ThrottleFactory {
      */
     public static <R> Throttle<R> createBurstThrottle(R resource, double rate, int threshold) {
         TimeService time = new TimeServiceImpl();
-        // TODO remove cyclic dependency
-        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, threshold, null);
-        return new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
+        Informer i = new Informer();
+        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, threshold, i);
+        AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
+        i.setDelegete(asyncThrottle);
+        return asyncThrottle;
+    }
+
+    private static class Informer implements ThrottleInformer {
+
+        private ThrottleInformer delegate;
+
+        void setDelegete(ThrottleInformer delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public int getQueueSize() {
+            return delegate.getQueueSize();
+        }
     }
 
     /**
