@@ -21,7 +21,7 @@ public class ThrottleFactory {
      * @param <R>
      * @return
      */
-    public static <R> Throttle<R> createRegularThrottle(R resource, double rate) {
+    public static <R> Throttle<R> createAsyncRegularThrottle(R resource, double rate) {
         ThrottleStrategy strategy = createRegularStrategy(rate);
         return new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
     }
@@ -34,28 +34,14 @@ public class ThrottleFactory {
      * @param <R>
      * @return
      */
-    public static <R> Throttle<R> createBurstThrottle(R resource, double rate, int threshold) {
+    public static <R> Throttle<R> createAsyncBurstThrottle(R resource, double rate, int threshold) {
         TimeService time = new TimeServiceImpl();
-        Informer holder = new Informer();
+        InformerHolder holder = new InformerHolder();
         ThrottleStrategy strategy = new BurstThrottleStrategy(rate, time, threshold, holder);
         AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
         // break cyclic dependency between strategy and throttle
         holder.setDelegate(asyncThrottle);
         return asyncThrottle;
-    }
-
-    private static class Informer implements ThrottleInformer {
-
-        private ThrottleInformer delegate;
-
-        void setDelegate(ThrottleInformer delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public int getQueueSize() {
-            return delegate.getQueueSize();
-        }
     }
 
     /**
@@ -72,6 +58,20 @@ public class ThrottleFactory {
 
         return (R) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
                 new Class[] {clazz}, syncThrottle);
+    }
+
+    private static class InformerHolder implements ThrottleInformer {
+
+        private ThrottleInformer delegate;
+
+        void setDelegate(ThrottleInformer delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public int getQueueSize() {
+            return delegate.getQueueSize();
+        }
     }
 
     private static ThrottleStrategy createRegularStrategy(double rate) {
