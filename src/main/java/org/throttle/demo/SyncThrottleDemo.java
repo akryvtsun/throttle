@@ -13,18 +13,11 @@ public class SyncThrottleDemo {
 
     public static void main(String[] args) throws InterruptedException {
 
-        final PrinterImpl resource = new PrinterImpl();
+        final Printer resource = new PrinterImpl();
         Printer throttle = ThrottleFactory.createSyncRegularThrottle(Printer.class, resource, RATE);
 
         while (true) {
             throttle.printf("%s Resource usage\n", LocalTime.now());
-
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             Thread.sleep(200);
         }
     }
