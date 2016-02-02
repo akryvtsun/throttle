@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by englishman on 2/1/16.
  */
-public class ThrottleFactory {
+public final class ThrottleFactory {
 
     private static final Executor EXECUTOR = Executors.newCachedThreadPool();
 
@@ -43,6 +43,20 @@ public class ThrottleFactory {
         return asyncThrottle;
     }
 
+    private static class InformerHolder implements ThrottleInformer {
+
+        private ThrottleInformer delegate;
+
+        void setDelegate(ThrottleInformer delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public int getQueueSize() {
+            return delegate.getQueueSize();
+        }
+    }
+
     /**
      *
      * @param clazz
@@ -59,17 +73,5 @@ public class ThrottleFactory {
                 new Class[] {clazz}, syncThrottle);
     }
 
-    private static class InformerHolder implements ThrottleInformer {
-
-        private ThrottleInformer delegate;
-
-        void setDelegate(ThrottleInformer delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public int getQueueSize() {
-            return delegate.getQueueSize();
-        }
-    }
+    private ThrottleFactory() {}
 }
