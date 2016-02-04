@@ -9,20 +9,16 @@ import java.util.function.Consumer;
 /**
  * Created by englishman on 1/29/16.
  */
-public final class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInformer, Runnable {
+public final class AsyncThrottleImpl<R> extends AbstractThrottleImpl<R> implements Throttle<R>, ThrottleInformer, Runnable {
 
-    private final R resource;
-    private final ThrottleStrategy strategy;
     private final BlockingQueue<Consumer<R>> queue;
 
-    public AsyncThrottleImpl(R resource, ThrottleStrategy strategy,
-                             BlockingQueue<Consumer<R>> queue) {
-        this.resource = resource;
-        this.strategy = strategy;
+    public AsyncThrottleImpl(R resource, ThrottleStrategy strategy, BlockingQueue<Consumer<R>> queue) {
+        super(resource, strategy);
         this.queue = queue;
     }
 
-    private void executeTask() throws InterruptedException {
+    void executeTask() throws InterruptedException {
         Consumer<R> task = queue.take();
         strategy.acquire();
         task.accept(resource);

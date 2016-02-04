@@ -6,14 +6,10 @@ import java.lang.reflect.Method;
 /**
  * Created by englishman on 2/1/16.
  */
-public final class SyncThrottleImpl<R> implements InvocationHandler {
-
-    private final R resource;
-    private final ThrottleStrategy strategy;
+public final class SyncThrottleImpl<R> extends AbstractThrottleImpl<R> implements InvocationHandler {
 
     public SyncThrottleImpl(R resource, ThrottleStrategy strategy) {
-        this.resource = resource;
-        this.strategy = strategy;
+        super(resource, strategy);
     }
 
     @Override
