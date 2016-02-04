@@ -2,29 +2,16 @@ package org.throttle.strategy;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.throttle.impl.ThrottleStrategy;
-
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.*;
 
 /**
  * Created by englishman on 1/30/16.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class RegularThrottleStrategyTest {
+public class RegularThrottleStrategyTest extends AbstractThrottleStrategyTest {
 
     static final long T = 0L;                       // in millis
     static final double RATE = 4;                   // in TPS
     static final double THRESHOLD = 1000 / RATE;    // in millis
     static final int SHIFT = 10;                    // in millis
-
-    @Mock
-    TimeService time;
-
-    ThrottleStrategy strategy;
 
     @Before
     public void setUp() throws Exception {
@@ -62,18 +49,5 @@ public class RegularThrottleStrategyTest {
 
         askRequestInTime((long)(T + (THRESHOLD + SHIFT)));
         verifyNoTimeDelays();
-    }
-
-    private void askRequestInTime(long time) throws InterruptedException {
-        when(this.time.getTime()).thenReturn(time);
-        strategy.acquire();
-    }
-
-    private void verifyNoTimeDelays() throws InterruptedException {
-        verify(time, never()).delay(anyLong());
-    }
-
-    private void verifyTimeDelay(long duration) throws InterruptedException {
-        verify(time, times(1)).delay(duration);
     }
 }

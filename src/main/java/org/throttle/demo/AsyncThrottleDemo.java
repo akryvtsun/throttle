@@ -16,7 +16,7 @@ public class AsyncThrottleDemo {
     public static void main(String[] args) throws InterruptedException {
 
         final Printer resource = new PrinterImpl();
-        Throttle<Printer> throttle = ThrottleFactory.createAsyncRegularThrottle(resource, RATE);
+        Throttle<Printer> throttle = ThrottleFactory.createAsyncBurstThrottle(resource, RATE, 4);
         Random random = new Random();
 
         final AtomicLong lastTime = new AtomicLong(System.currentTimeMillis());

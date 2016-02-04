@@ -30,24 +30,19 @@ public class BurstThrottleStrategy implements ThrottleStrategy {
     public void acquire() throws InterruptedException {
         long currentTime = timer.getTime();
 
+        long timeShift = 0;
+
         if (firstUsage) {
             firstUsage = false;
         }
-        else {
-            long delay = currentTime - lastTime;
-            if (delay < threshold) {
-                long effectiveDelay = getEffectiveDelay(delay);
-
-                timer.delay(effectiveDelay);
+        else if (informer.getQueueSize() <= sizeThreshold) {
+            long gapDuration = currentTime - lastTime;
+            if (gapDuration < threshold) {
+                timeShift = (long) threshold - gapDuration;
+                timer.delay(timeShift);
             }
         }
 
-        lastTime = currentTime;
-    }
-
-    private long getEffectiveDelay(long delay) {
-        return informer.getQueueSize() > sizeThreshold
-                ? 1     // execute ASAP
-                : (long) threshold - delay;
+        lastTime = currentTime + timeShift;
     }
 }
