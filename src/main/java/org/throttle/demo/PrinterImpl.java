@@ -10,14 +10,10 @@ public final class PrinterImpl implements Printer {
     private PrintStream resource = System.out;
 
     @Override
-    public void printf(String format, Object... args) {
+    public void printf(String format, Object... args) throws Exception {
         resource.printf(format, args);
         resource.flush();
-
-        try {
-            Thread.sleep(20);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // emulate resource usage delay
+        Thread.sleep(20);
     }
 }

@@ -19,7 +19,11 @@ public class AsyncThrottleDemo {
 
         while (true) {
             throttle.execute(r -> {
-                r.printf("%s Resource usage\n", LocalTime.now());
+                try {
+                    r.printf("%s Resource usage\n", LocalTime.now());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
             Thread.sleep(200);
         }
