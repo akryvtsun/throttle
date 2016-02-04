@@ -26,16 +26,20 @@ public class RegularThrottleStrategy implements ThrottleStrategy {
     public void acquire() throws InterruptedException {
         long currentTime = timer.getTime();
 
+        long timeShift = 0;
+
         if (firstUsage) {
             firstUsage = false;
         }
         else {
-            long delay = currentTime - lastTime;
-            if (delay < threshold)
-                timer.delay((long) threshold - delay);
+            long gapDuration = currentTime - lastTime;
+            if (gapDuration < threshold) {
+                timeShift = (long) threshold - gapDuration;
+                timer.delay(timeShift);
+            }
         }
 
-        lastTime = currentTime;
+        lastTime = currentTime + timeShift;
     }
 
 }

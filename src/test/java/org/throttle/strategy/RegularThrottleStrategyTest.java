@@ -48,6 +48,19 @@ public class RegularThrottleStrategyTest {
     }
 
     @Test
+    public void request_3_under_threshold_should_delay() throws Exception {
+        doFirstRequest();
+
+        when(time.getTime()).thenReturn((long)(T + (THRESHOLD - SHIFT)));
+        strategy.acquire();
+        verify(time, times(1)).delay(SHIFT);
+
+        when(time.getTime()).thenReturn((long)(T + THRESHOLD + SHIFT));
+        strategy.acquire();
+        verify(time, times(1)).delay((long)(THRESHOLD - SHIFT));
+    }
+
+    @Test
     public void not_first_request_above_threshold_should_executed_without_delay() throws Exception {
         doFirstRequest();
         when(time.getTime()).thenReturn((long)(T + (THRESHOLD + SHIFT)));
