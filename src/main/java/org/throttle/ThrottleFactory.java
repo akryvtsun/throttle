@@ -8,14 +8,18 @@ import org.throttle.strategy.RegularThrottleStrategy;
 import org.throttle.strategy.ThrottleInformer;
 
 import java.lang.reflect.Proxy;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
 /**
  * TODO remove static methods here for more testability
  * TODO Use EntityFactory interface internally
  * TODO Allows user send Executor as ThrottleFactory parameter
  * TODO use fluent API?
+ * TODO implement createSyncBurstThrottle
  *
  * Created by englishman on 2/1/16.
  */
@@ -32,7 +36,8 @@ public final class ThrottleFactory {
      */
     public static <R> Throttle<R> createAsyncRegularThrottle(R resource, double rate) {
         ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
-        return new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
+        BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
+        return new AsyncThrottleImpl<>(resource, strategy, queue, EXECUTOR);
     }
 
     /**
@@ -46,7 +51,8 @@ public final class ThrottleFactory {
     public static <R> Throttle<R> createAsyncBurstThrottle(R resource, double rate, int threshold) {
         InformerHolder holder = new InformerHolder();
         ThrottleStrategy strategy = new BurstThrottleStrategy(rate, threshold, holder);
-        AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, EXECUTOR);
+        BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
+        AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, queue, EXECUTOR);
         // break cyclic dependency between strategy and throttle
         holder.setDelegate(asyncThrottle);
         return asyncThrottle;

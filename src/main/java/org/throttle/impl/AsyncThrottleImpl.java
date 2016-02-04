@@ -5,7 +5,6 @@ import org.throttle.strategy.ThrottleInformer;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 /**
@@ -15,12 +14,13 @@ public final class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInforme
 
     private final R resource;
     private final ThrottleStrategy strategy;
+    private final BlockingQueue<Consumer<R>> queue;
 
-    private final BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
-
-    public AsyncThrottleImpl(R resource, ThrottleStrategy strategy, Executor executor) {
+    public AsyncThrottleImpl(R resource, ThrottleStrategy strategy,
+                             BlockingQueue<Consumer<R>> queue, Executor executor) {
         this.resource = resource;
         this.strategy = strategy;
+        this.queue = queue;
 
         executor.execute(this);
     }
