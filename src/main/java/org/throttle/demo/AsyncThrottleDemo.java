@@ -3,7 +3,8 @@ package org.throttle.demo;
 import org.throttle.Throttle;
 import org.throttle.ThrottleFactory;
 
-import java.time.LocalTime;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by ax01220 on 1/29/2016.
@@ -16,16 +17,26 @@ public class AsyncThrottleDemo {
 
         final Printer resource = new PrinterImpl();
         Throttle<Printer> throttle = ThrottleFactory.createAsyncRegularThrottle(resource, RATE);
+        Random random = new Random();
 
+        final AtomicLong lastTime = new AtomicLong(System.currentTimeMillis());
         while (true) {
             throttle.execute(r -> {
                 try {
-                    r.printf("%s Resource usage\n", LocalTime.now());
+                    r.printf("Resource usage");
+
+                    // log time gap durations between real calls
+                    long currentTime = System.currentTimeMillis();
+                    System.out.println(" (pause duration: " + (currentTime - lastTime.longValue()) + ")");
+                    System.out.flush();
+                    lastTime.set(currentTime);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-            Thread.sleep(200);
+            // emulate delay between resource requests
+            Thread.sleep(random.nextInt(100) + 50);
         }
     }
 }
