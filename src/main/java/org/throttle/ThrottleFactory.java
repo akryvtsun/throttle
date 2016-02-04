@@ -12,7 +12,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
- * TODO remove static methods here for more testability. Use EntityFactory interface internally. Allows user send Executor as ThrottleFactory parameter
+ * TODO remove static methods here for more testability
+ * TODO Use EntityFactory interface internally
+ * TODO Allows user send Executor as ThrottleFactory parameter
+ * TODO use fluent API?
  *
  * Created by englishman on 2/1/16.
  */
