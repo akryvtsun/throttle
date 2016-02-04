@@ -14,7 +14,8 @@ public class SyncThrottleDemo {
     public static void main(String[] args) throws Exception {
 
         final Printer resource = new PrinterImpl();
-        Printer throttle = ThrottleFactory.createSyncRegularThrottle(Printer.class, resource, RATE);
+        ThrottleFactory<Printer> factory = new ThrottleFactory<>();
+        Printer throttle = factory.createSyncRegularThrottle(Printer.class, resource, RATE);
         Random random = new Random();
 
         long lastTime = System.currentTimeMillis();

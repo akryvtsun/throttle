@@ -3,15 +3,11 @@ package org.throttle;
 import org.throttle.impl.AsyncThrottleImpl;
 import org.throttle.impl.SyncThrottleImpl;
 import org.throttle.impl.ThrottleStrategy;
-import org.throttle.strategy.BurstThrottleStrategy;
-import org.throttle.strategy.RegularThrottleStrategy;
 import org.throttle.strategy.ThrottleInformer;
 
 import java.lang.reflect.Proxy;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 /**
@@ -23,23 +19,32 @@ import java.util.function.Consumer;
  *
  * Created by englishman on 2/1/16.
  */
-public final class ThrottleFactory {
+public final class ThrottleFactory<R> {
 
-    private static final Executor EXECUTOR = Executors.newCachedThreadPool();
+    private final ComponentFactory<R> factory;
+    private final Executor executor;
+
+    public ThrottleFactory() {
+        this(new ComponentFactoryImpl());
+    }
+
+    ThrottleFactory(ComponentFactory<R> factory) {
+        this.factory = factory;
+        this.executor = factory.createExecutor();
+    }
 
     /**
      *
      * @param resource
      * @param rate in TPS
-     * @param <R>
      * @return
      */
-    public static <R> Throttle<R> createAsyncRegularThrottle(R resource, double rate) {
-        ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
-        BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
+    public Throttle<R> createAsyncRegularThrottle(R resource, double rate) {
+        ThrottleStrategy strategy = factory.createRegularThrottleStrategy(rate);
+        BlockingQueue<Consumer<R>> queue = factory.createBlockingQueue();
 
-        AsyncThrottleImpl<R> asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, queue);
-        EXECUTOR.execute(asyncThrottle);
+        AsyncThrottleImpl<R> asyncThrottle = factory.createAsyncThrottleImpl(resource, strategy, queue);
+        executor.execute(asyncThrottle);
 
         return asyncThrottle;
     }
@@ -49,20 +54,35 @@ public final class ThrottleFactory {
      * @param resource
      * @param rate
      * @param threshold
-     * @param <R>
      * @return
      */
-    public static <R> Throttle<R> createAsyncBurstThrottle(R resource, double rate, int threshold) {
+    public Throttle<R> createAsyncBurstThrottle(R resource, double rate, int threshold) {
         InformerHolder holder = new InformerHolder();
-        ThrottleStrategy strategy = new BurstThrottleStrategy(rate, threshold, holder);
-        BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
+        ThrottleStrategy strategy = factory.createBurstThrottleStrategy(rate, threshold, holder);
+        BlockingQueue<Consumer<R>> queue = factory.createBlockingQueue();
 
-        AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, queue);
+        AsyncThrottleImpl<R> asyncThrottle = factory.createAsyncThrottleImpl(resource, strategy, queue);
         // break cyclic dependency between strategy and throttle
         holder.setDelegate(asyncThrottle);
-        EXECUTOR.execute(asyncThrottle);
+        executor.execute(asyncThrottle);
 
         return asyncThrottle;
+    }
+
+    /**
+     *
+     * @param clazz
+     * @param resource
+     * @param rate
+     * @param
+     * @return
+     */
+    public R createSyncRegularThrottle(Class<R> clazz, R resource, double rate) {
+        ThrottleStrategy strategy = factory.createRegularThrottleStrategy(rate);
+        SyncThrottleImpl<R> syncThrottle = factory.createSyncThrottleImpl(resource, strategy);
+
+        return (R) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
+                new Class[] {clazz}, syncThrottle);
     }
 
     private static class InformerHolder implements ThrottleInformer {
@@ -78,22 +98,4 @@ public final class ThrottleFactory {
             return delegate.getQueueSize();
         }
     }
-
-    /**
-     *
-     * @param clazz
-     * @param resource
-     * @param rate
-     * @param <R>
-     * @return
-     */
-    public static <R> R createSyncRegularThrottle(Class<R> clazz, R resource, double rate) {
-        ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
-        SyncThrottleImpl<R> syncThrottle = new SyncThrottleImpl<>(resource, strategy);
-
-        return (R) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
-                new Class[] {clazz}, syncThrottle);
-    }
-
-    private ThrottleFactory() {}
 }
