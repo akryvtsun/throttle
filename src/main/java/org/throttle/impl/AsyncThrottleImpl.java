@@ -4,7 +4,6 @@ import org.throttle.Throttle;
 import org.throttle.strategy.ThrottleInformer;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 /**
@@ -17,12 +16,10 @@ public final class AsyncThrottleImpl<R>  implements Throttle<R>, ThrottleInforme
     private final BlockingQueue<Consumer<R>> queue;
 
     public AsyncThrottleImpl(R resource, ThrottleStrategy strategy,
-                             BlockingQueue<Consumer<R>> queue, Executor executor) {
+                             BlockingQueue<Consumer<R>> queue) {
         this.resource = resource;
         this.strategy = strategy;
         this.queue = queue;
-
-        executor.execute(this);
     }
 
     private void executeTask() throws InterruptedException {

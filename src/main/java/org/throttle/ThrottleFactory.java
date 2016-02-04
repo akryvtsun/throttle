@@ -37,7 +37,11 @@ public final class ThrottleFactory {
     public static <R> Throttle<R> createAsyncRegularThrottle(R resource, double rate) {
         ThrottleStrategy strategy = new RegularThrottleStrategy(rate);
         BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
-        return new AsyncThrottleImpl<>(resource, strategy, queue, EXECUTOR);
+
+        AsyncThrottleImpl<R> asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, queue);
+        EXECUTOR.execute(asyncThrottle);
+
+        return asyncThrottle;
     }
 
     /**
@@ -52,9 +56,12 @@ public final class ThrottleFactory {
         InformerHolder holder = new InformerHolder();
         ThrottleStrategy strategy = new BurstThrottleStrategy(rate, threshold, holder);
         BlockingQueue<Consumer<R>> queue = new LinkedBlockingQueue<>();
-        AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, queue, EXECUTOR);
+
+        AsyncThrottleImpl asyncThrottle = new AsyncThrottleImpl<>(resource, strategy, queue);
         // break cyclic dependency between strategy and throttle
         holder.setDelegate(asyncThrottle);
+        EXECUTOR.execute(asyncThrottle);
+
         return asyncThrottle;
     }
 
