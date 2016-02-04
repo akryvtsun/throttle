@@ -1,7 +1,7 @@
 package org.throttle;
 
-import org.throttle.impl.AsyncThrottleImpl;
-import org.throttle.impl.SyncThrottleImpl;
+import org.throttle.impl.AsyncThrottle;
+import org.throttle.impl.SyncThrottle;
 import org.throttle.impl.ThrottleStrategy;
 import org.throttle.strategy.ThrottleInformer;
 
@@ -43,7 +43,7 @@ public final class ThrottleFactory<R> {
         ThrottleStrategy strategy = factory.createRegularThrottleStrategy(rate);
         BlockingQueue<Consumer<R>> queue = factory.createBlockingQueue();
 
-        AsyncThrottleImpl<R> asyncThrottle = factory.createAsyncThrottleImpl(resource, strategy, queue);
+        AsyncThrottle<R> asyncThrottle = factory.createAsyncThrottleImpl(resource, strategy, queue);
         executor.execute(asyncThrottle);
 
         return asyncThrottle;
@@ -61,7 +61,7 @@ public final class ThrottleFactory<R> {
         ThrottleStrategy strategy = factory.createBurstThrottleStrategy(rate, threshold, holder);
         BlockingQueue<Consumer<R>> queue = factory.createBlockingQueue();
 
-        AsyncThrottleImpl<R> asyncThrottle = factory.createAsyncThrottleImpl(resource, strategy, queue);
+        AsyncThrottle<R> asyncThrottle = factory.createAsyncThrottleImpl(resource, strategy, queue);
         // break cyclic dependency between strategy and throttle
         holder.setDelegate(asyncThrottle);
         executor.execute(asyncThrottle);
@@ -79,7 +79,7 @@ public final class ThrottleFactory<R> {
      */
     public R createSyncRegularThrottle(Class<R> clazz, R resource, double rate) {
         ThrottleStrategy strategy = factory.createRegularThrottleStrategy(rate);
-        SyncThrottleImpl<R> syncThrottle = factory.createSyncThrottleImpl(resource, strategy);
+        SyncThrottle<R> syncThrottle = factory.createSyncThrottleImpl(resource, strategy);
 
         return (R) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
                 new Class[] {clazz}, syncThrottle);

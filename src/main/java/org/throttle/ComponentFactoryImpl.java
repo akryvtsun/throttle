@@ -1,8 +1,6 @@
 package org.throttle;
 
-import org.throttle.impl.AsyncThrottleImpl;
-import org.throttle.impl.SyncThrottleImpl;
-import org.throttle.impl.ThrottleStrategy;
+import org.throttle.impl.*;
 import org.throttle.strategy.BurstThrottleStrategy;
 import org.throttle.strategy.RegularThrottleStrategy;
 import org.throttle.strategy.ThrottleInformer;
@@ -33,12 +31,12 @@ class ComponentFactoryImpl<R> implements ComponentFactory<R> {
     }
 
     @Override
-    public AsyncThrottleImpl<R> createAsyncThrottleImpl(R resource, ThrottleStrategy strategy, BlockingQueue<Consumer<R>> queue) {
+    public AsyncThrottle<R> createAsyncThrottleImpl(R resource, ThrottleStrategy strategy, BlockingQueue<Consumer<R>> queue) {
         return new AsyncThrottleImpl<>(resource, strategy, queue);
     }
 
     @Override
-    public SyncThrottleImpl<R> createSyncThrottleImpl(R resource, ThrottleStrategy strategy) {
+    public SyncThrottle<R> createSyncThrottleImpl(R resource, ThrottleStrategy strategy) {
         return new SyncThrottleImpl<>(resource, strategy);
     }
 
