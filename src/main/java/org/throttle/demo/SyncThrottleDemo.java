@@ -29,7 +29,7 @@ public class SyncThrottleDemo {
             lastTime = currentTime;
 
             // emulate delay between resource requests
-            Thread.sleep(random.nextInt(100) + 50);
+            Thread.sleep(random.nextInt(200) + 150);
         }
     }
 }
